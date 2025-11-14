@@ -39,14 +39,25 @@ public class UserController{
     @PutMapping("/id")
     @PreAuthorize("hasRole('COORDINADOR')")
     public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody UserUpdateRequest userUpdateRequest){
-        return ResponseEntity.ok(userService.update(id, userUpdateRequest));
+        try{
+            return ResponseEntity.ok(userService.update(id, userUpdateRequest));
+        }catch(RuntimeException e){
+            if(e.getMessage().contains("No tiene permisos")){
+                return ResponseEntity.status(403).body(new MessageResponse(e.getMessage()));
+            }
+            return RequestEntity badRequest().body(new MessageResponse(e.getMessage()));
+        }
     }
 
     @DeleteMapping(value ="/id", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<MessageResponse> deleteUser(@PathVariable Long id, @ResquestBody User user){
-        userService.delete(id);
-        return ResponseEntity.ok(new MessageResponse("Usuario borrado con exito"));
+    public ResponseEntity<MessageResponse> deleteUser(@PathVariable Long id){
+        try{
+            userService.delete(id);
+            return ResponseEntity.ok(new MessageResponse("Usuario borrado con exito"));
+        }catch(RuntimeException e){
+            return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
+        }
     }
 
 }
