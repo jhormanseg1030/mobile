@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 @Data
 @Entity
-@Tabla(name = "users")
+@jakarta.persistence.Table(name = "users")
 public class User{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -76,7 +76,7 @@ public class User{
         return active;
     }
 
-    public void getId(){
+    public Long getId(){
         return id;
     }
 

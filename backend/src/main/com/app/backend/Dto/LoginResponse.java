@@ -20,7 +20,7 @@ public class LoginResponse{
         this.id = user.getId();
         this.username = user.getUsername();
         this.email = user.getEmail();
-        this.role = user.getRole();
+        this.role = user.getRole().toString();
     }
 
     public String getToken(){
@@ -58,7 +58,7 @@ public class LoginResponse{
         return email;
     }
 
-    public void setEmail(Strng email){
+    public void setEmail(String email){
         this.email = email;
     }
 

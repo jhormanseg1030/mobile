@@ -17,7 +17,7 @@ public class UserUpdateRequest{
         return username;
     }
 
-    public void setUsername(Strin username){
+    public void setUsername(String username){
         this.username = username;
     }
 
@@ -50,6 +50,6 @@ public class UserUpdateRequest{
     }
 
     public void setActive(Boolean active){
-        this.active. active;
+        this.active = active;
     }
 }

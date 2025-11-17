@@ -1,9 +1,9 @@
-package com.app.backend.model;
+package com.app.backend.models;
 
 import jakarta.persistence.*;
 import lombok.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import java.util.list;
+import java.util.List;
 
 @Data
 @Entity
@@ -24,7 +24,7 @@ public class Category{
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
     @JsonIgnore
-    private List<Subcategory> Subcategories;
+    private List<Subcategory> subcategories;
 
     public void setId(){
         this.id = id;

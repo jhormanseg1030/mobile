@@ -17,7 +17,7 @@ public class CategoryService{
     }
 
     public Category findById(Long id){
-        return categoryRepository.findById(id).orElse(() -> new RuntimeException("Categoria no encontrada"));
+        return categoryRepository.findById(id).orElseThrow(() -> new RuntimeException("Categoria no encontrada"));
     }
 
     public Category create(Category category){

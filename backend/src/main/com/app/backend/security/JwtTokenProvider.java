@@ -29,15 +29,15 @@ public class JwtTokenProvider {
         return Jwts.builder()
         .subject(username)
         .issuedAt(now)
-        .expiretion(expiryDate)
-        .signWith(getSigningKey())
+        .expiration(expirationDate)
+        .signWith(getSecretKey())
         .compact();
     }
 
     public String getUsernameFromToken(String token){
          
          Claims claims = Jwts.parser()
-         .verifyWith(getSigningKey())
+         .verifyWith(getSecretKey())
          .build()
          .parseSignedClaims(token)
          .getPayload();
@@ -47,11 +47,11 @@ public class JwtTokenProvider {
     public boolean validateToken(String authToken){
         try{
             Jwts.parser()
-            .verifyWith(getSigningKey())
+            .verifyWith(getSecretKey())
             .build()
             .parseSignedClaims(authToken);
             return true;
-        } catch (jwtExpiration | IllegalArgumentException e){
+        } catch (JwtException | IllegalArgumentException e){
             return false;
         }
     }

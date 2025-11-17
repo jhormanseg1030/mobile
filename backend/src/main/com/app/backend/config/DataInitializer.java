@@ -44,16 +44,18 @@ public class DataInitializer implements CommandLineRunner {
 
         User admin = new User();
         admin.setUsername("admin");
+        admin.setEmail("admin@app.com");
         admin.setPassword(passwordEncoder.encode("admin"));
-        admin.setRoles(User.Role.ADMIN);
+        admin.setRole(User.Role.ADMIN);
         admin.setActive(true);
         userRepository.save(admin);
         System.out.println("Usuario admin creado");
 
         User coor = new User();
         coor.setUsername("coor");
+        coor.setEmail("coordinador@app.com");
         coor.setPassword(passwordEncoder.encode("coor"));
-        coor.setRoles(User.Role.COORDINADOR);
+        coor.setRole(User.Role.COORDINADOR);
         coor.setActive(true);
         userRepository.save(coor);
         System.out.println("Usuario coor creado");

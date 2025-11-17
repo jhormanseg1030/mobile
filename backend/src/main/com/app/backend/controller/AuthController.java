@@ -1,21 +1,21 @@
 package com.app.backend.controller;
 
-import com.app.backend.Dto.loginRequest;
-import com.app.backend.Dto.loginResponse;
+import com.app.backend.Dto.LoginRequest;
+import com.app.backend.Dto.LoginResponse;
 import com.app.backend.models.User;
 import com.app.backend.repository.UserRepository;
 import com.app.backend.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.security.SecurityContextHolder;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("api/auth")
-@CrossOrigin(origins = "*", )
+@RequestMapping("/api/auth")
 public class AuthController{
 
     @Autowired
@@ -27,24 +27,31 @@ public class AuthController{
     @Autowired
     private UserRepository userRepository;
 
-    @PostMapping(value = "/login", consume = "application/json", produces = "appilcation/json")
-    public ResponseEntity<?> login(@ResquestBody LoginRequest loginRequest){
+    @PostMapping(value = "/login", consumes = "application/json", produces = "application/json")
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest){
+        System.out.println("=== LOGIN ATTEMPT ===");
+        System.out.println("Username: " + loginRequest.getUsername());
+        System.out.println("Password: " + loginRequest.getPassword());
         try{
             Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                     loginRequest.getUsername(),
                     loginRequest.getPassword()));
 
-                    SecurityContextHolder.getContext().setAuthentiation(authentication);
+            System.out.println("Authentication successful");
+            SecurityContextHolder.getContext().setAuthentication(authentication);
 
-                    String jwt = tokenProvider.generateToken(authentication);
+            String jwt = tokenProvider.generateToken(authentication);
 
-                    User user = userRepository.finByUsername(loginRequest.getUsername())
-                        .orElseThow(() -> new RuntimeExpection("Usuario no encontrado"))
+            User user = userRepository.findByUsername(loginRequest.getUsername())
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-                    return ResponseEntity.ok(new loginResponse(jwt, user));
+            return ResponseEntity.ok(new LoginResponse(jwt, user));
         }catch(Exception e){
-            return ResponseEntity.badRequest().body("{\"error\":\"Credenciales invalidas}");
+            System.out.println("Exception caught: " + e.getClass().getName());
+            System.out.println("Error message: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(400).contentType(MediaType.APPLICATION_JSON).body("{\"error\":\"" + e.getMessage() + "\",\"type\":\"" + e.getClass().getSimpleName() + "\"}");
         }   
     }
 }

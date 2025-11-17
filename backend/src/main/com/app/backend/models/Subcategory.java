@@ -1,9 +1,9 @@
-package com.app.backend.model;
+package com.app.backend.models;
 
 import jakarta.persistence.*;
 import lombok.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import java.util.list;
+import java.util.List;
 
 @Data
 @Entity
@@ -30,6 +30,14 @@ public class Subcategory{
     @JsonIgnore
     private List<Product> products;
 
+    public Long getId(){
+        return id;
+    }
+
+    public void setId(Long id){
+        this.id = id;
+    }
+
     public void setName(String name){
         this.name = name;
     }
@@ -54,7 +62,7 @@ public class Subcategory{
     }
 
     public Category getCategory(){
-        return category
+        return category;
     }
 
     public void setCategory(Category category){

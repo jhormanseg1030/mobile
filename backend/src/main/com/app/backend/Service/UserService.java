@@ -25,7 +25,7 @@ public class UserService{
     }
 
     public User findById(Long id){
-        return userRepository.findById(id).orElse(() -> new RuntimeException("Usuario no encontrado"));
+        return userRepository.findById(id).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
     }
 
     public User create(UserCreateRequest request){
@@ -38,20 +38,20 @@ public class UserService{
         return userRepository.save(user);
     }
 
-    public User update(UserUpdateRequest request){
+    public User update(Long id, UserUpdateRequest request){
         User user = findById(id);
 
-        if(id == 1L && isCoordinador()){
-            throw new RuntimeException("No tienes permisos para modificar, el administrador principal");
+        if(id == 1L && !isCoordinador()){
+            throw new RuntimeException("No tienes permisos para modificar el administrador principal");
 
         }
-        user.setUsername(request.getUsername());
-        user.setEmail(request.getEmail());
-        user.setRole(request.getRole());
-        user.setActive(request.getActive());
+        if(request.getUsername() != null) user.setUsername(request.getUsername());
+        if(request.getEmail() != null) user.setEmail(request.getEmail());
+        if(request.getRole() != null) user.setRole(request.getRole());
+        if(request.getActive() != null) user.setActive(request.getActive());
 
         if(request.getPassword() != null && !request.getPassword().isEmpty()){
-            user.setPassword(passwordEncoder.emcode(request.getPassword()));
+            user.setPassword(passwordEncoder.encode(request.getPassword()));
         }
 
         return userRepository.save(user);
@@ -59,8 +59,8 @@ public class UserService{
 
     private boolean isCoordinador(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if(authentication != null && authentication.getAuthentication() != null){
-            return authentication.getAuthorities().steam()
+        if(authentication != null && authentication.getAuthorities() != null){
+            return authentication.getAuthorities().stream()
             .anyMatch(auth -> auth.getAuthority().equals("ROLE_COORDINADOR"));
         }
         return false;
@@ -73,7 +73,7 @@ public class UserService{
         }
 
         if(user == null){
-            throw new RuntimeException("Usuario no encontrado")
+            throw new RuntimeException("Usuario no encontrado");
         }
         userRepository.delete(user);
     }
