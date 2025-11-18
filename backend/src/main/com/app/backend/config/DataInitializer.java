@@ -59,6 +59,6 @@ public class DataInitializer implements CommandLineRunner {
         coor.setActive(true);
         userRepository.save(coor);
         System.out.println("Usuario coor creado");
-        System.out.println("DataInitializer completado exitosamente te lo aseguro por dieguito maradona");
+        System.out.println("DataInitializer completado exitosamente");
     }
 }
