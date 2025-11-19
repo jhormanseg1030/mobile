@@ -18,7 +18,9 @@ public class JwtTokenProvider {
     private Long jwtExpiration;
 
     private SecretKey getSecretKey(){
-        return Keys.hmacShaKeyFor(jwtSecret.getBytes());
+        // Usar una clave fija pero segura - puedes cambiar esta cadena por cualquier string de al menos 32 caracteres
+        String fixedSecret = "MyVerySecureFixedSecretKeyThatIsAtLeast256BitsLongForJWTTokenGeneration12345678";
+        return Keys.hmacShaKeyFor(fixedSecret.getBytes(java.nio.charset.StandardCharsets.UTF_8));
     }
 
     public String generateToken(Authentication authentication){
@@ -51,8 +53,19 @@ public class JwtTokenProvider {
             .build()
             .parseSignedClaims(authToken);
             return true;
-        } catch (JwtException | IllegalArgumentException e){
-            return false;
+        } catch (SecurityException ex) {
+            System.err.println("Invalid JWT signature");
+        } catch (MalformedJwtException ex) {
+            System.err.println("Invalid JWT token");
+        } catch (ExpiredJwtException ex) {
+            System.err.println("Expired JWT token");
+        } catch (UnsupportedJwtException ex) {
+            System.err.println("Unsupported JWT token");
+        } catch (IllegalArgumentException ex) {
+            System.err.println("JWT claims string is empty");
+        } catch (JwtException ex) {
+            System.err.println("JWT token validation error: " + ex.getMessage());
         }
+        return false;
     }
 }

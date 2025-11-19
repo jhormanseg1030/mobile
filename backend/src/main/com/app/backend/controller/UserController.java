@@ -20,20 +20,20 @@ public class UserController{
     private UserService userService;
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'COORDINADOR')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('COORDINADOR')")
     public ResponseEntity<List<User>>
     getAllUsers(){
         return ResponseEntity.ok(userService.findAll());
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'COORDINADOR')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('COORDINADOR')")
     public ResponseEntity<User> getUserById(@PathVariable Long id){
         return ResponseEntity.ok(userService.findById(id));
     }
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'COORDINADOR')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('COORDINADOR')")
     public ResponseEntity<User> createUser(@RequestBody UserCreateRequest userCreateRequest){
         return ResponseEntity.ok(userService.create(userCreateRequest));
     }
